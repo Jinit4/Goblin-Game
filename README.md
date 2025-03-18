@@ -8,12 +8,13 @@ To install the game
 
 2. Create a virtual environment
    ```bash
-   python -m venv venv <!-- Create a virtual environment named venv and activate it -->
-   source venv/bin/activate <!-- # For Windows: .\venv\Scripts\activate -->
+   python -m venv venv #Create a virtual environment named venv and activate it 
+   source venv/bin/activate # For Windows: .\venv\Scripts\activate 
 
 3. Installing all the requirements
    ```bash
    pip install -r requirements.txt
 
 How to run?
-python firstgame.py
+   ```bash
+   python firstgame.py
