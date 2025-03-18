@@ -24,6 +24,8 @@ class player (object):
         self.walkCount = 0
         self.jump_count = 10
         self.standing = True
+        self.hitbox = (self.x+20, self.y, 28, 60) 
+        #Whenever we have 4 things inside of a tuple we are referring it as a rectangle
 
     def draw(self,win):
         if self.walkCount + 1 >= 27:
@@ -41,6 +43,9 @@ class player (object):
                 win.blit(walkRight[0], (self.x, self.y))
             else:
                 win.blit(walkLeft[0], (self.x,self.y))
+        self.hitbox = (self.x+20, self.y, 28, 60) 
+        #We need to move the hitbox everytime the character moves and so we are adding it here in the draw
+        pygame.draw.rect (win, (255,0,0), self.hitbox, 2)
 
 class projectile (object):
     def __init__ (self, x,y,radius, color, facing):
@@ -67,6 +72,7 @@ class enemy(object):
             self.path = [self.x, self.end]
             self.walkCount = 0
             self.vel = 3
+            self.hitbox = (self.x + 20, self.y, 28, 60)
 
         def draw(self,win):
             self.move()
@@ -78,6 +84,8 @@ class enemy(object):
             else:
                 win.blit(self.walkLeft[self.walkCount//3], (self.x,self.y))
                 self.walkCount += 1
+            self.hitbox = (self.x + 20, self.y, 28, 60)
+            pygame.draw.rect (win, (255,0,0), self.hitbox, 2)
 
         def move(self):
             if self.vel > 0:
