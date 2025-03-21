@@ -11,13 +11,15 @@ To install the game
 
 2. Create a virtual environment
 
-   ````bash
+   ```bash
    python -m venv venv #Create a virtual environment named venv and activate it
+
+   ```
 
    ```bash
    source venv/bin/activate # For Windows: .\venv\Scripts\activate
 
-   ````
+   ```
 
 3. Installing all the requirements
 
@@ -30,3 +32,5 @@ To install the game
    ```bash
    python firstgame.py
    ```
+ 5. ## Demo
+   ![Gameplay](gameplay.gif)
