@@ -9,7 +9,15 @@ walkRight = [pygame.image.load('image/R1.png'), pygame.image.load('image/R2.png'
 walkLeft = [pygame.image.load('image/L1.png'), pygame.image.load('image/L2.png'), pygame.image.load('image/L3.png'), pygame.image.load('image/L4.png'), pygame.image.load('image/L5.png'), pygame.image.load('image/L6.png'), pygame.image.load('image/L7.png'), pygame.image.load('image/L8.png'), pygame.image.load('image/L9.png')]
 bg = pygame.image.load('image/bg.jpg')
 char = pygame.image.load('image/standing.png')
+
 clock = pygame.time.Clock()
+
+bulletSound = pygame.mixer.Sound('sound/bullet.mp3')
+hitSound = pygame.mixer.Sound('sound/hit.mp3')
+
+music = pygame.mixer.music.load('sound/music.mp3')
+pygame.mixer.music.play(-1)
+
 score = 0
 
 class player (object):
@@ -25,7 +33,7 @@ class player (object):
         self.walkCount = 0
         self.jump_count = 10
         self.standing = True
-        self.hitbox = (self.x+20, self.y, 28, 60) 
+        self.hitbox = (self.x+17, self.y+11, 29, 52) 
         #Whenever we have 4 things inside of a tuple we are referring it as a rectangle
 
     def draw(self,win):
@@ -46,8 +54,26 @@ class player (object):
                 win.blit(walkLeft[0], (self.x,self.y))
         self.hitbox = (self.x+20, self.y, 28, 60) 
         #We need to move the hitbox everytime the character moves and so we are adding it here in the draw
-        
         #pygame.draw.rect (win, (255,0,0), self.hitbox, 2)
+
+    def hit (self):
+        self.is_jump = False
+        self.jump_count = 10
+        self.x = 60
+        self.y = 410
+        self.walkCount = 0
+        font1 = pygame.font.SysFont('comicsans', 100)
+        text = font1.render('-5', 1, (255,0,0))
+        win.blit(text, (250 - (text.get_width()/2), 200))
+        pygame.display.update()
+        i = 0
+        while i < 300:
+            pygame.time.delay(10)
+            i += 1
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    i = 301
+                    pygame.quit()
 
 class projectile (object):
     def __init__ (self, x,y,radius, color, facing):
@@ -118,7 +144,7 @@ class enemy(object):
 def redraw_game_window():
     win.blit(bg, (0,0))
     text = font.render ('Score: '+ str(score), 1, (0,0,0))
-    win.blit(text, (360, 10))
+    win.blit(text, (340, 10))
     man.draw(win)
     goblin.draw(win)
     for bullet in bullets:
@@ -134,6 +160,12 @@ bullets = []
 run = True #With this loop we will display the window that we have created above.
 while run:
     clock.tick(27)
+    if goblin.visible == True:
+        if man.hitbox[1] < goblin.hitbox[1]+goblin.hitbox[3] and man.hitbox[1]+ man.hitbox[3] > goblin.hitbox[1]:
+            if man.hitbox[0] + man.hitbox[2] > goblin.hitbox[0] and man.hitbox[0] < goblin.hitbox[0] + goblin.hitbox[2]:
+                man.hit()
+                score -= 5
+
     if shootLoop > 0:
         shootLoop += 1
     if shootLoop > 3:
@@ -146,6 +178,7 @@ while run:
     for bullet in bullets:
         if bullet.y - bullet.radius < goblin.hitbox[1]+goblin.hitbox[3] and bullet.y + bullet.radius > goblin.hitbox[1]:
             if bullet.x + bullet.radius > goblin.hitbox[0] and bullet.x - bullet.radius < goblin.hitbox[0] + goblin.hitbox[2]:
+                hitSound.play()
                 goblin.hit()
                 score += 1
                 bullets.pop(bullets.index(bullet))
@@ -158,6 +191,7 @@ while run:
     keys = pygame.key.get_pressed()
 
     if keys [pygame.K_SPACE] and shootLoop == 0:
+        bulletSound.play()
         if man.left:
             facing = -1
         else:
